@@ -1,3 +1,4 @@
+const contacts = [];
 const addButton = document.getElementById('addContact');
 
 function addContact(contactName) {
@@ -25,7 +26,21 @@ function addContact(contactName) {
 }
 
 addButton.addEventListener('click', () => {
-  const contactName = document.getElementById('contactName').value;
+  const contactName = document.getElementById('contactName').value
+
+  if (contactName === '') {
+    alert('Por favor, ingresa un nombre de contacto');
+    return;
+  }
+
+  for (let contact of contacts) {
+    if (contact.toLowerCase() === contactName.toLowerCase()) {
+      alert('El contacto ya existe');
+      return;
+    }
+  }
+
+  contacts.push(contactName);
   addContact(contactName);
   const inputAddContact = document.getElementById('contactName');
   inputAddContact.value = '';
