@@ -2,12 +2,15 @@ const addButton = document.getElementById('addContact');
 
 function addContact(contactName) {
   const contactList = document.getElementById('contactList');
-  const contactItem = document.createElement('div');
+  const contactDiv = document.createElement('li');
+  contactDiv.style.display = 'flex';
+  contactDiv.style.gap = '1rem';
+  contactDiv.style.alignItems = 'center';
 
-  const contactNameP = document.createElement("p");
-  contactNameP.textContent = contactName;
-  contactItem.appendChild(contactNameP);
-  contactList.appendChild(contactItem);
+  const contactSpan = document.createElement("span");
+  contactSpan.textContent = `🎱 ${contactName}`;
+  contactDiv.appendChild(contactSpan);
+  contactList.appendChild(contactDiv);
 
   const editButton = document.createElement('button');
   editButton.className = 'editButton';
@@ -15,8 +18,8 @@ function addContact(contactName) {
   const deleteButton = document.createElement('button');
   editButton.textContent = 'Editar';
   deleteButton.textContent = 'Eliminar';
-  contactItem.appendChild(editButton);
-  contactItem.appendChild(deleteButton);
+  contactDiv.appendChild(editButton);
+  contactDiv.appendChild(deleteButton);
   deleteButton.addEventListener('click', deleteContact);
   editButton.addEventListener('click', editContact);
 }
@@ -54,7 +57,7 @@ function updateContact(ev) {
   const editButton = contactToEdit.children[1];
 
   const contactName = contactToEdit.children[0].value;
-  const contactUpdated = document.createElement('p');
+  const contactUpdated = document.createElement('span');
   contactUpdated.textContent = contactName;
   contactToEdit.replaceChild(contactUpdated, contactToEdit.firstChild);
   contactToEdit.children[1].textContent = 'Editar';
