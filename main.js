@@ -12,13 +12,13 @@ function renderContact(contactName) {
 
   // Creando el elemento li para el contacto:
   const contactLi = document.createElement('li');
-  contactLi.style.display = 'flex';
-  contactLi.style.gap = '1rem';
-  contactLi.style.alignItems = 'center';
+  contactLi.style.listStyle = 'square';
 
   // Creando el elemento span con el nombre del contacto:
   const contactSpan = document.createElement("span");
-  contactSpan.textContent = `🎱 ${contactName}`;
+  contactSpan.textContent = contactName;
+  contactSpan.style.marginRight = '1rem';
+
   contactLi.appendChild(contactSpan);
 
   // Creando el botón para editar el contacto:
@@ -64,40 +64,51 @@ addButton.addEventListener('click', () => {
 })
 
 function deleteContact(ev) {
-  const contactToDelete = ev.target.parentNode;
-  contactToDelete.remove();
+  const contactElementToDelete = ev.target.parentNode;
+  const contactToDelete = contactElementToDelete.firstChild.textContent;
+
+  // Elimina el contacto de la lista
+  contacts.splice(contacts.indexOf(contactToDelete), 1);
+
+  // Elimina el elemento li del DOM
+  contactElementToDelete.remove();
+
+  // Actualiza el contador
+  contactCounter.textContent = `Total de contactos: ${contacts.length}`;
 }
 
 function editContact(ev) {
   const contactToEdit = ev.target.parentNode;
+  // Cambia el texto del botón
   contactToEdit.children[1].textContent = 'Guardar';
 
-  const editButton = contactToEdit.children[1];
-
+  // Extrae el nombre del contacto y crea un input con su value para editarlo
   const contactName = contactToEdit.children[0].textContent ;
-  console.log(contactName);
-
   const input = document.createElement('input');
   input.value = contactName;
   contactToEdit.replaceChild(input, contactToEdit.firstChild);
+
+  // Actualiza
+  const editButton = contactToEdit.children[1];
   editButton.removeEventListener('click', editContact);
   editButton.addEventListener('click', updateContact);
 }
 
 function updateContact(ev) {
   const contactToEdit = ev.target.parentNode;
-  const editButton = contactToEdit.children[1];
-
-  const contactName = contactToEdit.children[0].value;
+  // Cambia el texto del botón
+  contactToEdit.children[1].textContent = 'Editar';
 
   // Crea un span con el nuevo nombre de contacto
+  const contactName = contactToEdit.children[0].value;
   const contactUpdated = document.createElement('span');
   contactUpdated.textContent = contactName;
 
   // Reemplaza el input por el span con el nuevo contacto
   contactToEdit.replaceChild(contactUpdated, contactToEdit.firstChild);
-  contactToEdit.children[1].textContent = 'Editar';
 
+  // Actualiza el evento del botón
+  const editButton = contactToEdit.children[1];
   editButton.removeEventListener('click', updateContact);
   editButton.addEventListener('click', editContact);
 }
