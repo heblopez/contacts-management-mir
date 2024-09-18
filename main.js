@@ -9,6 +9,25 @@ contactCounter.textContent = `Total de contactos: ${contacts.length}`;
 contactCounter.style.marginBlock = "1rem";
 inputNewContact.after(contactCounter);
 
+const sortButton = document.createElement("button");
+sortButton.textContent = "A-Z ⬆";
+addButton.after(sortButton);
+sortButton.addEventListener("click", () => {
+  contacts.sort();
+  const contactList = document.getElementById("contactList");
+  contactList.innerHTML = "";
+  for (let contact of contacts) {
+    renderContact(contact);
+  }
+});
+
+inputNewContact.addEventListener("keypress", (ev) => {
+  if (ev.key === "Enter") {
+    ev.preventDefault();
+    addButton.click();
+  }
+})
+
 document.addEventListener("DOMContentLoaded", () => {
   for (let contact of contacts) {
     renderContact(contact);
