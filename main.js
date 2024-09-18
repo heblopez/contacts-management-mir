@@ -1,4 +1,4 @@
-const contacts = [];
+const contacts = ['User1', 'User2', 'User3'];
 const addButton = document.getElementById('addContact');
 const inputNewContact = document.getElementById('contactName');
 
@@ -6,6 +6,12 @@ const contactCounter = document.createElement('div');
 contactCounter.textContent = `Total de contactos: ${contacts.length}`;
 contactCounter.style.marginBlock = '1rem';
 inputNewContact.after(contactCounter);
+
+document.addEventListener('DOMContentLoaded', () => {
+  for (let contact of contacts) {
+    renderContact(contact);
+  }
+});
 
 function renderContact(contactName) {
   const contactList = document.getElementById('contactList');
@@ -32,8 +38,8 @@ function renderContact(contactName) {
   contactLi.appendChild(deleteButton);
 
   // Agregando los eventos al elemento li:
-  deleteButton.addEventListener('click', deleteContact);
-  editButton.addEventListener('click', editContact);
+  deleteButton.addEventListener('click', (ev) => deleteContact(ev, contactName));
+  editButton.addEventListener('click', (ev) => editContact(ev, contactName));
 
   contactList.appendChild(contactLi);
 }
@@ -63,12 +69,11 @@ addButton.addEventListener('click', () => {
   contactCounter.textContent = `Total de contactos: ${contacts.length}`;
 })
 
-function deleteContact(ev) {
+function deleteContact(ev, contactName) {
   const contactElementToDelete = ev.target.parentNode;
-  const contactToDelete = contactElementToDelete.firstChild.textContent;
 
   // Elimina el contacto de la lista
-  contacts.splice(contacts.indexOf(contactToDelete), 1);
+  contacts.splice(contacts.indexOf(contactName), 1);
 
   // Elimina el elemento li del DOM
   contactElementToDelete.remove();
@@ -77,38 +82,44 @@ function deleteContact(ev) {
   contactCounter.textContent = `Total de contactos: ${contacts.length}`;
 }
 
-function editContact(ev) {
+function editContact(ev, contactName) {
+  const index = contacts.indexOf(contactName);
   const contactToEdit = ev.target.parentNode;
   // Cambia el texto del botón
   contactToEdit.children[1].textContent = 'Guardar';
 
   // Extrae el nombre del contacto y crea un input con su value para editarlo
-  const contactName = contactToEdit.children[0].textContent ;
   const input = document.createElement('input');
   input.value = contactName;
   contactToEdit.replaceChild(input, contactToEdit.firstChild);
 
-  // Actualiza
+  // Remplaza el botón de editar por uno nuevo
   const editButton = contactToEdit.children[1];
-  editButton.removeEventListener('click', editContact);
-  editButton.addEventListener('click', updateContact);
+  const newEditButton = editButton.cloneNode(true);
+  newEditButton.addEventListener('click', (ev) => updateContact(ev, index, input.value));
+  contactToEdit.replaceChild(newEditButton, editButton);
 }
 
-function updateContact(ev) {
+function updateContact(ev, index, newContactName) {
   const contactToEdit = ev.target.parentNode;
   // Cambia el texto del botón
   contactToEdit.children[1].textContent = 'Editar';
 
   // Crea un span con el nuevo nombre de contacto
-  const contactName = contactToEdit.children[0].value;
   const contactUpdated = document.createElement('span');
-  contactUpdated.textContent = contactName;
+  contactUpdated.textContent = newContactName;
+  contactUpdated.style.marginRight = '1rem';
+
+  // Actualiza el array de contactos
+  contacts[index] = newContactName;
+  console.log(contacts);
 
   // Reemplaza el input por el span con el nuevo contacto
   contactToEdit.replaceChild(contactUpdated, contactToEdit.firstChild);
 
-  // Actualiza el evento del botón
+  // Reemplaza el botón de editar por uno nuevo
   const editButton = contactToEdit.children[1];
-  editButton.removeEventListener('click', updateContact);
-  editButton.addEventListener('click', editContact);
+  const newEditButton = editButton.cloneNode(true);
+  newEditButton.addEventListener('click', (ev) => editContact(ev, newContactName));
+  contactToEdit.replaceChild(newEditButton, editButton);
 }
